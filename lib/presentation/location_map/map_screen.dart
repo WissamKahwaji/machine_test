@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,8 +10,8 @@ import 'package:machine_test/injection.dart';
 import 'package:machine_test/presentation/add_item/screens/add_item_screen.dart';
 import 'package:machine_test/presentation/core/constants/app_colors.dart';
 import 'package:machine_test/presentation/core/widgets/custom_btn.dart';
-import 'package:machine_test/presentation/core/widgets/custom_marker.dart';
 import 'package:machine_test/presentation/location_map/blocs/location_bloc/location_bloc_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -90,6 +89,13 @@ class _MapScreenState extends State<MapScreen> {
         borderRadius: BorderRadius.circular(200),
       ),
       child: GestureDetector(
+        onTap: () {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.landscapeRight,
+            DeviceOrientation.landscapeLeft,
+          ]);
+          Navigator.pop(context);
+        },
         child: const Icon(
           Icons.arrow_back,
           color: AppColors.blackColor,
@@ -101,24 +107,22 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget showLocation() {
     return Stack(
+      alignment: Alignment.center,
       children: [
-        SizedBox(
-          height: 71,
-          child: ClipPath(
-            clipper: MessageClipper(),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
-                  borderRadius: BorderRadius.circular(8)),
-              child: Text(
-                '${_draggedLatLng.latitude.toStringAsFixed(5)},${_draggedLatLng.longitude.toStringAsFixed(5)}',
-                style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.blackColor,
-                    fontWeight: FontWeight.w600),
-              ),
-            ),
+        SvgPicture.asset(
+          'assets/icons/Union.svg',
+        ),
+        Positioned(
+          top: 22.r,
+          left: 0,
+          right: 0,
+          child: Text(
+            '${_draggedLatLng.latitude.toStringAsFixed(5)},${_draggedLatLng.longitude.toStringAsFixed(5)}',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 12.sp,
+                color: AppColors.blackColor,
+                fontWeight: FontWeight.w600),
           ),
         ),
       ],
@@ -163,99 +167,125 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocListener<LocationBlocBloc, LocationBlocState>(
-        bloc: locationBloc,
-        listener: (context, state) {
-          if (state is GetLocationPlaceSuccess) {
-            _goToPlace(
-                lat: state.result.result.geometry.location.lat,
-                lng: state.result.result.geometry.location.lng);
-          }
-        },
-        child: Stack(
-          children: [
-            GoogleMap(
-              mapType: MapType.terrain,
-              // markers: markers,
-              zoomControlsEnabled: false,
-              initialCameraPosition: _cameraPosition,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
+    return WillPopScope(
+      onWillPop: () async {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+        ]);
+        return true;
+      },
+      child: Scaffold(
+        body: BlocListener<LocationBlocBloc, LocationBlocState>(
+          bloc: locationBloc,
+          listener: (context, state) {
+            if (state is GetLocationPlaceSuccess) {
+              _goToPlace(
+                  lat: state.result.result.geometry.location.lat,
+                  lng: state.result.result.geometry.location.lng);
+            }
+          },
+          child: Stack(
+            children: [
+              GoogleMap(
+                mapType: MapType.terrain,
+                // markers: markers,
+                zoomControlsEnabled: false,
+                initialCameraPosition: _cameraPosition,
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                },
 
-              onCameraMove: (position) {
-                _draggedLatLng = position.target;
-                _updateMarker();
-              },
-            ),
-            Positioned(
-              top: MediaQuery.sizeOf(context).height / 2.9,
-              left: MediaQuery.sizeOf(context).width / 4,
-              child: showLocation(),
-            ),
-            Positioned(
+                onCameraMove: (position) {
+                  _draggedLatLng = position.target;
+                  _updateMarker();
+                },
+              ),
+              Positioned(
+                right: 0,
+                left: 0,
+                top: MediaQuery.sizeOf(context).height / 3,
+                child: showLocation(),
+              ),
+              Positioned(
                 top: MediaQuery.sizeOf(context).height / 2.3,
                 left: 0,
                 right: 0,
-                child: customMarker()),
-            Positioned(top: 45, left: 18, child: buildBackIcon()),
-            Positioned(
-                top: 89,
+                // child: customMarker(),
+                child: SvgPicture.asset(
+                  'assets/icons/pin_map.svg',
+                  height: 53.h,
+                  width: 31.64.w,
+                ),
+              ),
+              Positioned(top: 55, left: 18, child: buildBackIcon()),
+              Positioned(
+                  top: 99,
+                  left: 0,
+                  right: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25.0, vertical: 8),
+                    child: TextFormField(
+                      controller: _searchController,
+                      onFieldSubmitted: (value) async {
+                        locationBloc.add(GetLocationPlaceEvent(
+                            input: _searchController.text));
+                      },
+                      decoration: InputDecoration(
+                        fillColor: AppColors.greyColor,
+                        suffixIcon: GestureDetector(
+                            onTap: () async {
+                              locationBloc.add(GetLocationPlaceEvent(
+                                  input: _searchController.text));
+                            },
+                            child: const Icon(Icons.search)),
+                        filled: true,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              14,
+                            ),
+                            borderSide: BorderSide.none),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 14),
+                        hintText: 'Search for your location',
+                      ),
+                      style: const TextStyle(color: AppColors.blackColor),
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                    ),
+                  )),
+              Positioned(
+                  bottom: 99,
+                  left: MediaQuery.sizeOf(context).width / 3.6,
+                  child: const Text(
+                    'Move the pin to adjust',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                  )),
+              Positioned(
+                bottom: 20,
                 left: 0,
                 right: 0,
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 25.0, vertical: 8),
-                  child: TextFormField(
-                    controller: _searchController,
-                    onFieldSubmitted: (value) async {
-                      locationBloc.add(
-                          GetLocationPlaceEvent(input: _searchController.text));
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: CustomButton(
+                    title: 'Confirm Location',
+                    fixedSize: Size(MediaQuery.sizeOf(context).width, 56.h),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) {
+                          return const AddItemScreen();
+                        },
+                      ));
                     },
-                    decoration: InputDecoration(
-                      fillColor: AppColors.greyColor,
-                      suffixIcon: GestureDetector(
-                          onTap: () async {
-                            locationBloc.add(GetLocationPlaceEvent(
-                                input: _searchController.text));
-                          },
-                          child: const Icon(Icons.search)),
-                      filled: true,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            14,
-                          ),
-                          borderSide: BorderSide.none),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 14),
-                      hintText: 'Search for your location',
-                    ),
-                    style: const TextStyle(color: AppColors.blackColor),
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.done,
                   ),
-                )),
-            Positioned(
-              bottom: 20,
-              left: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: CustomButton(
-                  title: 'Confirm Location',
-                  fixedSize: Size(MediaQuery.sizeOf(context).width, 56.h),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) {
-                        return const AddItemScreen();
-                      },
-                    ));
-                  },
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

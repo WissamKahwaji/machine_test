@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:machine_test/presentation/core/constants/app_colors.dart';
 
 Widget customRadioButton(
     {required String text,
     required int index,
-    required Color color,
+    required String svgIcon,
     required Function(int index) onTap,
     required int value}) {
   return Row(
@@ -15,8 +16,8 @@ Widget customRadioButton(
           onTap(index);
         },
         child: Container(
-          width: 24.w,
-          height: 24.h,
+          width: 24.r,
+          height: 24.r,
           decoration: BoxDecoration(
               border: (value == index)
                   ? Border.all(color: AppColors.primaryColor, width: 7)
@@ -28,21 +29,10 @@ Widget customRadioButton(
       SizedBox(
         width: 6.w,
       ),
-      Container(
-        width: 13.w,
-        height: 13.h,
-        padding: const EdgeInsets.all(2.6),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: color,
-          ),
-        ),
-        child: Container(
-          width: 7.6.w,
-          height: 7.6.h,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100), color: color),
-        ),
+      SvgPicture.asset(
+        svgIcon,
+        width: 13.r,
+        height: 13.r,
       ),
       const SizedBox(
         width: 12,

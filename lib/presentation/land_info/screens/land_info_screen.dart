@@ -1,15 +1,13 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:machine_test/domain/land_info/entities/land_info_model.dart';
 import 'package:machine_test/presentation/core/constants/app_colors.dart';
 import 'package:machine_test/presentation/core/widgets/custom_clipper.dart';
 import 'package:machine_test/presentation/data/land_info_data.dart';
 import 'package:machine_test/presentation/location_map/map_screen.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 
 class LandInfoScreen extends StatefulWidget {
   const LandInfoScreen({super.key});
@@ -34,24 +32,23 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        width: MediaQuery.sizeOf(context).width,
+        height: MediaQuery.sizeOf(context).height,
         color: Colors.black,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 34, horizontal: 1),
+            padding: EdgeInsets.symmetric(vertical: 34.r, horizontal: 57.r),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Transform.rotate(
-                  angle: -pi / 2,
-                  child: Text(
-                    'Land Info',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 25.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                SvgPicture.asset(
+                  'assets/images/text_group.svg',
+                  width: 59.r,
+                  height: 326.r,
+                ),
+                SizedBox(
+                  width: 31.r,
                 ),
                 Stack(
                   children: [
@@ -63,13 +60,13 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
                           decoration: BoxDecoration(
                               border: Border.all(
                             color: AppColors.whiteColor,
-                            width: 0.2,
+                            width: 0.1,
                           )),
                           child: Row(
                             children: [
                               firstContainer(),
                               SizedBox(
-                                  width: 322.h,
+                                  width: 362.r,
                                   child: Stack(
                                     children: [
                                       Column(
@@ -80,28 +77,6 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
                                           thirdContainer(),
                                           forthContainer(),
                                         ],
-                                      ),
-                                      Positioned(
-                                        top: 0,
-                                        right: 0,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context)
-                                                  .push(MaterialPageRoute(
-                                                builder: (context) {
-                                                  return const MapScreen();
-                                                },
-                                              ));
-                                            },
-                                            child: const Icon(
-                                              Icons.close,
-                                              color: AppColors.whiteColor,
-                                              size: 42,
-                                            ),
-                                          ),
-                                        ),
                                       ),
                                     ],
                                   )),
@@ -123,10 +98,10 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
                               },
                             ));
                           },
-                          child: const Icon(
+                          child: Icon(
                             Icons.close,
                             color: AppColors.whiteColor,
-                            size: 42,
+                            size: 46.r,
                           ),
                         ),
                       ),
@@ -143,7 +118,7 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
 
   Container forthContainer() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 24.r, vertical: 18.r),
       decoration: const BoxDecoration(
           border: Border.symmetric(
               vertical: BorderSide(
@@ -211,15 +186,15 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
             ],
           ),
           const SizedBox(
-            height: 22,
+            height: 12,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(122, 41),
+                    fixedSize: Size(142.r, 41.r),
                     backgroundColor: Colors.black,
                     side: const BorderSide(
                       color: AppColors.whiteColor,
@@ -234,10 +209,13 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
                   ),
                 ),
               ),
+              SizedBox(
+                width: 20.r,
+              ),
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(122, 41),
+                    fixedSize: Size(142.r, 41.r),
                     backgroundColor: Colors.white,
                     side: const BorderSide(
                       color: AppColors.whiteColor,
@@ -254,6 +232,9 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
               ),
             ],
           ),
+          SizedBox(
+            height: 18.r,
+          ),
         ],
       ),
     );
@@ -263,7 +244,7 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
     return Row(
       children: [
         Container(
-          width: 152.r,
+          width: 176.r,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           decoration: BoxDecoration(
               border: Border.all(
@@ -291,7 +272,7 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
           ),
         ),
         Container(
-          width: 170.r,
+          width: 186.r,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           decoration: const BoxDecoration(
               border: Border(
@@ -336,7 +317,7 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
       padding: const EdgeInsets.all(24),
       decoration: const BoxDecoration(
           border: Border(
-              left: BorderSide(color: AppColors.whiteColor, width: 0.2))),
+              left: BorderSide(color: AppColors.whiteColor, width: 0.1))),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -348,25 +329,10 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Stack(
-                children: [
-                  ClipPath(
-                    clipper: ParallelogramClipper(),
-                    child: Container(
-                      height: 7.54.r,
-                      width: 7.54.r,
-                      color: Colors.white,
-                    ),
-                  ),
-                  ClipPath(
-                    clipper: ParallelogramClipper(),
-                    child: Container(
-                      height: 13.45.r,
-                      width: 7.45.r,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+              SvgPicture.asset(
+                'assets/icons/locationPin.svg',
+                height: 16.r,
+                width: 9.r,
               ),
               SizedBox(
                 width: 2.w,
@@ -397,12 +363,12 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(9, 9, 9, 9),
             color: AppColors.blackColor,
-            width: 74,
-            height: 38,
+            width: 75.12.r,
+            height: 34.r,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
                   'assets/icons/jj.png',
@@ -422,25 +388,28 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
               ],
             ),
           ),
-          SizedBox(
-            height: 16.h,
-          ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 60),
+            padding: EdgeInsets.only(
+              left: 60.r,
+              right: 60.r,
+              top: 40.r,
+              bottom: 58.r,
+            ),
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, top: 16, bottom: 10),
               decoration: BoxDecoration(
-                  color: AppColors.darkGreyColor,
+                  color: const Color(0XFF342317),
                   borderRadius: BorderRadius.circular(6.24)),
               child: Column(
                 children: [
                   CachedNetworkImage(
                     imageUrl: _landInfo.imageUrl,
-                    height: 127,
-                    width: 127,
+                    height: 127.r,
+                    width: 127.r,
                   ),
-                  const SizedBox(
-                    height: 17,
+                  SizedBox(
+                    height: 18.r,
                   ),
                   Row(
                     children: [
@@ -459,7 +428,7 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
                           Text(
                             _landInfo.colorCode,
                             style: const TextStyle(
-                                color: AppColors.blackColor,
+                                color: AppColors.whiteColor,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400),
                           ),
@@ -470,8 +439,8 @@ class _LandInfoScreenState extends State<LandInfoScreen> {
                       ),
                       CachedNetworkImage(
                         imageUrl: _landInfo.qrcode,
-                        width: 30.41,
-                        height: 30.41,
+                        width: 30.41.r,
+                        height: 30.41.r,
                       )
                     ],
                   ),

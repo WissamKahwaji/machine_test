@@ -218,7 +218,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                       customRadioButton(
                         text: 'Non Veg',
                         index: 0,
-                        color: Colors.red,
+                        svgIcon: 'assets/icons/fram_red.svg',
                         onTap: (int index) {
                           setState(() {
                             value = index;
@@ -232,7 +232,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                       customRadioButton(
                         text: 'Veg',
                         index: 1,
-                        color: Colors.green,
+                        svgIcon: 'assets/icons/frame_green.svg',
                         onTap: (int index) {
                           setState(() {
                             value = index;
@@ -322,7 +322,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                   ),
                   CustomButton(
                     title: '+ Add Item',
-                    fixedSize: Size(MediaQuery.sizeOf(context).width, 56.h),
+                    fixedSize: Size(MediaQuery.sizeOf(context).width, 56.r),
                     onPressed: () {
                       if (!_formKey.currentState!.validate()) return;
                     },
